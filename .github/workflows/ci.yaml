@@ -70,5 +70,5 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/authservice:latest
-            ghcr.io/${{ github.repository_owner }}/authservice:${{ github.sha }}
+            ghcr.io/${{ github.repository_owner }}/orderservice:latest
+            ghcr.io/${{ github.repository_owner }}/orderservice:${{ github.sha }}
