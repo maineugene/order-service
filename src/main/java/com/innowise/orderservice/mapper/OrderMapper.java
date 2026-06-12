@@ -15,7 +15,7 @@ public interface OrderMapper {
 
     OrderResponseDto toDto(Order entity);
 
-    @Mapping(target = "itemId", source = "idem.id")
+    @Mapping(target = "itemId", source = "item.id")
     @Mapping(target = "itemName", source = "item.name")
     OrderItemResponseDto toItemDto(OrderItem entity);
 }
