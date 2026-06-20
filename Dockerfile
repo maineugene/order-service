@@ -14,7 +14,7 @@ FROM eclipse-temurin:21-jre-alpine
 
 WORKDIR /app
 
-COPY --from=builder /build/target/authservice-*.jar app.jar
+COPY --from=builder /build/target/orderservice-*.jar app.jar
 
 EXPOSE 8081
 
