@@ -10,7 +10,8 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-
+user-service:
+  url: http://user-service:8082
 ---
 spring:
   config:

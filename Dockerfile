@@ -16,6 +16,6 @@ WORKDIR /app
 
 COPY --from=builder /build/target/orderservice-*.jar app.jar
 
-EXPOSE 8081
+EXPOSE 8083
 
 ENTRYPOINT ["java", "-Dspring.profiles.active=docker", "-jar", "app.jar"]
