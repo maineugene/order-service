@@ -34,21 +34,22 @@ public class OrderService {
     }
 
     public OrderResponseDto getOrderById(Long id, String email){
-        Order order = orderRepository.findById(id)
+        Order order = orderRepository.findByIdAndDeletedFalse(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
-        Order saved = orderRepository.save(order);
-        return enrichWithUser(orderMapper.toDto(saved), email);
+
+        return enrichWithUser(orderMapper.toDto(order), email);
     }
 
     public Page<OrderResponseDto> getOrders(List<String> statuses, Instant from, Instant to, Pageable pageable) {
         Specification<Order> spec = Specification.where(OrderSpecification.hasStatuses(statuses))
-                .and(OrderSpecification.createdBetween(from, to));
+                .and(OrderSpecification.createdBetween(from, to))
+                .and(OrderSpecification.notDeleted());
         return orderRepository.findAll(spec, pageable).map(orderMapper::toDto);
     }
 
     @Transactional
     public OrderResponseDto updateOrder(Long id, OrderRequestDto dto, String email) {
-        Order order = orderRepository.findById(id)
+        Order order = orderRepository.findByIdAndDeletedFalse(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
         order.setStatus(dto.status());
         return enrichWithUser(orderMapper.toDto(order), email);
@@ -56,12 +57,14 @@ public class OrderService {
 
     @Transactional
     public void deleteOrder(Long id) {
-        Order order = orderRepository.findByIdAndDeletedFalse(id).orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+        Order order = orderRepository.findByIdAndDeletedFalse(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
         order.setDeleted(true);
     }
 
     private OrderResponseDto enrichWithUser(OrderResponseDto responseDto, String email) {
         UserDto user = userServiceClient.getUserByEmail(email);
-        return new OrderResponseDto(responseDto.id(), responseDto.userId(), responseDto.status(), responseDto.totalPrice(), user, responseDto.orderItems());
+        return new OrderResponseDto(responseDto.id(), responseDto.userId(), responseDto.status(),
+                responseDto.totalPrice(), user, responseDto.orderItems());
     }
 }
