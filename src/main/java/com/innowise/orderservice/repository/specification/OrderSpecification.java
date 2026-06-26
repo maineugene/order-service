@@ -31,4 +31,8 @@ public class OrderSpecification {
         };
     }
 
+    public static Specification<Order> notDeleted() {
+        return (root, query, cb) ->
+                cb.isFalse(root.get("deleted"));
+    }
 }

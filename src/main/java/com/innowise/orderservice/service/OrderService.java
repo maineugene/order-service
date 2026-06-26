@@ -56,10 +56,8 @@ public class OrderService {
 
     @Transactional
     public void deleteOrder(Long id) {
-        if (!orderRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Order not found");
-        }
-        orderRepository.deleteById(id);
+        Order order = orderRepository.findByIdAndDeletedFalse(id).orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+        order.setDeleted(true);
     }
 
     private OrderResponseDto enrichWithUser(OrderResponseDto responseDto, String email) {
